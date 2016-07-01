@@ -4,6 +4,8 @@ import java.util.List;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.util.LruCache;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +36,13 @@ public class PictrueAdapter extends BaseAdapter {
 
 	@Override
 	public int getCount() {
+		if(pics==null){
+			Handler handler=new Handler();
+			Message msg=new Message();
+			msg.arg1=1;
+			handler.sendMessage(msg);
+			return 0;
+		}
 		return pics.size();
 	}
 
@@ -61,7 +70,7 @@ public class PictrueAdapter extends BaseAdapter {
 		final ImageView iv = hodler.iv;
 		
 		ImageLoader loader=new ImageLoader(queue, new mCache());
-		ImageListener listenner = loader.getImageListener(iv, R.drawable.ic_launcher, R.drawable.nonetwork);
+		ImageListener listenner = ImageLoader.getImageListener(iv, R.drawable.ic_launcher, R.drawable.nonetwork);
 		loader.get(p.getUrl(), listenner);
 		return convertView;
 	}

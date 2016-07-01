@@ -1,139 +1,108 @@
 package cn.shanshuan.html.demo.activity;
 
 
-import java.io.IOException;
+import java.util.List;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
-import android.app.WallpaperManager;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
+
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
 import android.os.Bundle;
-import android.provider.MediaStore;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
-import android.view.View.OnLongClickListener;
+import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ImageView.ScaleType;
-import android.widget.TextView;
-import android.widget.Toast;
+import cn.shanshuan.html.demo.MyApplication;
 import cn.shanshuan.html.demo.R;
 import cn.shanshuan.html.demo.entity.Picture;
-import cn.shanshuan.html.demo.presenter.i.BigPictruePersenterImp;
-import cn.shanshuan.html.demo.view.i.IBigPictureView;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.Response.ErrorListener;
-import com.android.volley.Response.Listener;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageRequest;
-import com.android.volley.toolbox.Volley;
-
-public class SecondMainActivity extends Activity implements IBigPictureView {
-	private ImageView iv2;
-	private Picture p;
-	private TextView tv;
-	private String url;
+public class SecondMainActivity extends FragmentActivity {
 	private String BigPath;
-	private String b;
-	private BigPictruePersenterImp bt;
-	private Bitmap bitmap;
+	private ViewPager vp;
+	private List<Picture> pics;
+	private ImageView iv;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_second_main);
-		iv2=(ImageView) findViewById(R.id.imageView);
-		tv=(TextView) findViewById(R.id.tv_save_path);
+		vp=(ViewPager) findViewById(R.id.vp);
 		Intent i = getIntent();
-		 BigPath = i.getStringExtra("BigPath");
-		 Log.i("123", BigPath);
-		 b="https://wallpapers.wallhaven.cc/wallpapers/full/wallhaven-"+BigPath+".jpg";
-		 bt=new  BigPictruePersenterImp(this,BigPath);
-		 bt.loadBIgPictrue();
-		 iv2.setOnLongClickListener(new OnLongClickListener() {
+		BigPath = i.getStringExtra("BigPath");
+		pics=MyApplication.getApp().getPics();
+		Log.i("pics", pics.toString());
+		vp.setAdapter(new MyPagerAdapter());
+		vp.setCurrentItem(i.getIntExtra("position", -1));
+	}
+	
+	public class MyPagerAdapter extends  PagerAdapter{
+		
+		@Override
+		public Object instantiateItem(ViewGroup container, int position) {
+			Picture p=pics.get(position);
+			View v=View.inflate(SecondMainActivity.this, R.layout.item_bigpicture, null);
+			iv=(ImageView) v.findViewById(R.id.imageView1);
 			
-			@Override
-			public boolean onLongClick(View v) {
-				AlertDialog.Builder builder=new Builder(SecondMainActivity.this);
-				builder.setTitle("提示信息").setMessage("你确定要保存图片到图库？").setPositiveButton("取消", null)
-				.setNegativeButton("确定", new OnClickListener() {
-					
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, b, "高清大图");
-						Toast.makeText(SecondMainActivity.this, "保存到图库成库", Toast.LENGTH_SHORT).show();
-					}
-				}).setNeutralButton("设置次图片为壁纸", new OnClickListener() {
-					
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						WallpaperManager manager=WallpaperManager.getInstance(SecondMainActivity.this);
-						try {
-							manager.setBitmap(bitmap);
-						} catch (IOException e) {
-							Toast.makeText(SecondMainActivity.this, "设置壁纸失败", Toast.LENGTH_SHORT).show();
-							e.printStackTrace();
-						}
-						Toast.makeText(SecondMainActivity.this, "设置壁纸成功", Toast.LENGTH_SHORT).show();
-					}
-				})
-				.create().show();
-				return false;
-			}
-		});
-	}
-
-
-
-
-	@Override
-	protected void onPause() {
-		bitmap=null;
-		super.onPause();
-	}
-
-
-	public void showBig() {
-//		Glide.with(this).load(p.getBigPath()).into(iv2);
-//		Log.i("111", p.getBigPath());
-		RequestQueue q = Volley.newRequestQueue(this);
-		ImageRequest ir=new ImageRequest(p.getBigPath(), new Listener<Bitmap>() {
-
-			@Override
-			public void onResponse(Bitmap bitmap) {
-				iv2.setImageBitmap(bitmap);
-				SecondMainActivity.this.bitmap=bitmap;
+			String bigPath=p.getBigPath();
+			Log.i("111", bigPath);
+			String b="http://wallpapers.wallhaven.cc/wallpapers/full/wallhaven-"+bigPath+".jpg";
+			DisplayImageOptions options=new DisplayImageOptions.Builder()
+			.showImageOnLoading(R.drawable.loading1).showImageOnFail(R.drawable.nonetwork).showImageForEmptyUri(R.drawable.nonetwork)
+			.cacheInMemory(true).cacheOnDisc(true).build();
+			ImageLoader.getInstance().displayImage(b, iv, options,new ImageLoadingListener() {
 				
-			}
-		}, 0, 0, ScaleType.CENTER_CROP, Config.ARGB_8888, new ErrorListener() {
-
-			@Override
-			public void onErrorResponse(VolleyError arg0) {
+				@Override
+				public void onLoadingStarted(String arg0, View arg1) {
+					Log.i("123", "开始下载");
+					
+				}
 				
-			}
-		});
-		q.add(ir);
+				@Override
+				public void onLoadingFailed(String arg0, View arg1, FailReason arg2) {
+					Log.i("123", "下载失败");
+					
+				}
+				
+				@Override
+				public void onLoadingComplete(String arg0, View arg1, Bitmap arg2) {
+					Log.i("123", "下载完成");
+					
+				}
+				
+				@Override
+				public void onLoadingCancelled(String arg0, View arg1) {
+					Log.i("123", "下载取消");
+					
+				}
+			});	
+			container.addView(v);
+			return v;
+		}
+		
+		
+		public MyPagerAdapter() {
+			super();
+		}
+
+		@Override
+		public int getCount() {
+			return pics.size();
+		}
+
+		@Override
+		public boolean isViewFromObject(View arg0, Object arg1) {
+			
+			return arg0==arg1;
+		}
+		@Override
+		public void destroyItem(ViewGroup container, int position, Object object) {
+			container.removeView((View)object);
+		}
+		
 	}
-
-
-@Override
-protected void onDestroy() {
-	bitmap=null;
-	super.onDestroy();
-}
-
-
-
-
-	@Override
-	public void setBig(Picture p) {
-		this.p=p;
-	}
-
-
-
 }

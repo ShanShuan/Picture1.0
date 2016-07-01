@@ -7,17 +7,15 @@ import cn.shanshuan.html.demo.modle.i.ModleImp;
 import cn.shanshuan.html.demo.view.i.IBigPictureView;
 
 public class BigPictruePersenterImp implements IBigPictruePersenter{
-	private String bigUrl;
 	private IModel model;
 	private IBigPictureView view;
-	public BigPictruePersenterImp(IBigPictureView view,String bigUrl){
-		this.bigUrl=bigUrl;
+	public BigPictruePersenterImp(IBigPictureView view){
 		this.view=view;
 		model=new ModleImp();
 	}
 	
 	@Override
-	public void loadBIgPictrue() {
+	public void loadBIgPictrue(String bigUrl) {
 		model.findBigPictrue(new BigCallbcak() {
 			
 			@Override
