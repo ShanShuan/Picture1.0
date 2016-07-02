@@ -16,9 +16,9 @@
     <application
         android:name="cn.shanshuan.html.demo.MyApplication"
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/icon"
         android:label="@string/app_name"
-        android:theme="@android:style/Theme.Holo.Light.NoActionBar" >
+        android:theme="@android:style/Theme.Holo.Light.NoActionBar" android:description="@anim/controller_dimiss_anim" android:logo="@anim/controller_dimiss_anim">
         <activity
             android:name="cn.shanshuan.html.demo.activity.MainActivity"
             android:label="@string/app_name" >

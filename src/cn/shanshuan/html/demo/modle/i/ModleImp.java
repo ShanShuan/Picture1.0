@@ -25,6 +25,7 @@ public class ModleImp implements IModel{
 			protected List<Picture> doInBackground(String... params) {
 				try {
 					Document d = Jsoup.connect("https://alpha.wallhaven.cc/latest?page="+pager).get();
+
 					Element thumbs = d.getElementById("thumbs");
 					Elements sextions = thumbs.getElementsByClass("thumb-listing-page");
 					List<Picture> pisc=new ArrayList<Picture>();
@@ -35,9 +36,7 @@ public class ModleImp implements IModel{
 							Element li = lis.get(j);
 							Picture p=new Picture();
 							String src = li.select("img").attr("data-src");
-							Log.i("777", src);
 							String Bigpath=src.substring(src.lastIndexOf("th-")+3,src.lastIndexOf(".jpg"));
-							Log.i("888", Bigpath);
 							p.setBigPath(Bigpath);
 							p.setUrl(src);
 							pisc.add(p);
@@ -71,7 +70,6 @@ public class ModleImp implements IModel{
 					Document d = Jsoup.connect("https://alpha.wallhaven.cc/wallpaper/"+bigPath).get();
 					
 					String bigUrl ="http:"+ d.getElementById("wallpaper").attr("src");
-					Log.i("1222", bigUrl);
 					Picture p=new Picture();
 					p.setBigPath(bigUrl);
 					return p;

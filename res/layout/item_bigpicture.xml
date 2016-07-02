@@ -3,12 +3,52 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-    
+
     <cn.shanshuan.html.demo.view.TouchImageView
         android:id="@+id/imageView1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@+id/ll_bigPictrue_controller"
         android:layout_centerInParent="true"
         android:src="@drawable/ic_launcher" />
-    
+
+    <ImageButton
+        android:id="@+id/btn_show_controller"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true" 
+        android:scaleType="fitXY"
+        android:src="@drawable/show"
+        android:background="@null"
+        android:visibility="gone"
+        android:layout_marginLeft="10dp"/>
+
+    <LinearLayout
+        android:layout_toRightOf="@+id/btn_show_controller"
+        android:id="@+id/ll_bigPictrue_controller"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:visibility="invisible" >
+
+        <TextView
+            android:id="@+id/tv_set_wall_pager"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="#0020D0"
+            android:text="设置为壁纸" />
+
+        <TextView
+            android:id="@+id/tv_save_pager"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+              android:textColor="#0020D0"
+            android:text="保存到图库" />
+    </LinearLayout>
+
 </RelativeLayout>
