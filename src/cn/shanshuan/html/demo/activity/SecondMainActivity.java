@@ -10,8 +10,10 @@ import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.app.WallpaperManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.provider.MediaStore.Images;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -42,6 +44,7 @@ public class SecondMainActivity extends FragmentActivity {
 	private ImageView iv;
 	private MyPagerAdapter adpter;
 	private boolean show;
+	private TextView tvShare;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -69,6 +72,7 @@ public class SecondMainActivity extends FragmentActivity {
 			final LinearLayout ll=(LinearLayout) v.findViewById(R.id.ll_bigPictrue_controller);
 			final TextView tvSet=(TextView) v.findViewById(R.id.tv_set_wall_pager);
 			final TextView tvSave=(TextView) v.findViewById(R.id.tv_save_pager);
+			final TextView tvShare=(TextView) v.findViewById(R.id.tv_share);
 			String bigPath=p.getBigPath();
 			Log.i("111", bigPath);
 			final String b="http://wallpapers.wallhaven.cc/wallpapers/full/wallhaven-"+bigPath+".jpg";
@@ -177,6 +181,17 @@ public class SecondMainActivity extends FragmentActivity {
 						}
 					});
 					
+					tvShare.setOnClickListener(new OnClickListener() {
+						
+						@Override
+						public void onClick(View v) {
+							Intent intent=new Intent(Intent.ACTION_SEND);
+							intent.setType("image/*");
+							Uri value=Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), arg2, null, null));
+							intent.putExtra(Intent.EXTRA_STREAM, value);
+							startActivity(Intent.createChooser(intent, "好图必须分享！主人您要分享到："));
+						}
+					});
 					tvSave.setOnClickListener(new OnClickListener() {
 						
 						@Override

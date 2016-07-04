@@ -58,6 +58,7 @@ public class MainActivity extends Activity implements IPictureView{
 			}
 		};
 	};
+	private MyApplication app;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -66,6 +67,7 @@ public class MainActivity extends Activity implements IPictureView{
 		gv=(GridView) findViewById(R.id.gridView1);
 		
 		animation=AnimationUtils.loadAnimation(this, R.anim.item_animation);
+		app=(MyApplication)MyApplication.getApp();
 		 c=new LayoutAnimationController(animation);
 		c.setDelay(0.5f);
 		c.setOrder(LayoutAnimationController.ORDER_RANDOM);
@@ -131,6 +133,7 @@ public class MainActivity extends Activity implements IPictureView{
 		gv.setAdapter(adapter);
 		isUpdating=false;
 		gv.setLayoutAnimation(c);
+		app.playSound();
 	}
 
 }
